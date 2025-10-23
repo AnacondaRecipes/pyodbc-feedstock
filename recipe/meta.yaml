@@ -28,8 +28,6 @@ requirements:
     - python
 
 test:
-  source_files:
-    - tests
   imports:
     - pyodbc
   requires:
@@ -37,6 +35,7 @@ test:
     - pytest
   commands:
     - pip check
+    - python -c "import pyodbc; print('\n'.join(sorted(pyodbc.drivers())))"
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     # Cannot invoke upstream tests due to lack of databse connection
     # E   pyodbc.InterfaceError: ('IM002', '[IM002] [unixODBC][Driver Manager]Data source name not found and no default driver specified (0) (SQLDriverConnect)')
