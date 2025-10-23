@@ -16,24 +16,31 @@ build:
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
     - python
     - pip
     - setuptools
-    - unixodbc 2.3.11  # [unix]
+    - unixodbc {{ unixodbc }}  # [unix]
   run:
     - python
 
 test:
+  source_files:
+    - tests
   imports:
     - pyodbc
   requires:
     - pip
+    - pytest
   commands:
     - pip check
-    - python -c "import pyodbc; print('\n'.join(sorted(pyodbc.drivers())))"
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    # Cannot invoke upstream tests due to lack of databse connection
+    # E   pyodbc.InterfaceError: ('IM002', '[IM002] [unixODBC][Driver Manager]Data source name not found and no default driver specified (0) (SQLDriverConnect)')
+    # - pytest -v tests
 
 about:
   home: https://github.com/mkleehammer/pyodbc
@@ -45,7 +52,7 @@ about:
     pyodbc is a Python DB API 2 module for ODBC. This project provides an
     up-to-date, convenient interface to ODBC using native data types like
     datetime and decimal.
-  doc_url: https://mkleehammer.github.io/pyodbc/
+  doc_url: https://mkleehammer.github.io/pyodbc
   dev_url: https://github.com/mkleehammer/pyodbc
 
 extra:
