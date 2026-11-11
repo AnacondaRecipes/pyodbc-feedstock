@@ -1,18 +1,18 @@
 {% set name = "pyodbc" %}
-{% set version = "5.3.0" %}
+{% set version = "5.5.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 2fe0e063d8fb66efd0ac6dc39236c4de1a45f17c33eaded0d553d21c199f4d05
+  sha256: 7a78873cac66b2857bf490a24a3e3aada24f839534e97c67e177f691e7d701ac
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  skip: true  # [py<39]
+  skip: true  # [py<311]
 
 requirements:
   build:
@@ -37,9 +37,7 @@ test:
     - pip check
     - python -c "import pyodbc; print('\n'.join(sorted(pyodbc.drivers())))"
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # Cannot invoke upstream tests due to lack of databse connection
-    # E   pyodbc.InterfaceError: ('IM002', '[IM002] [unixODBC][Driver Manager]Data source name not found and no default driver specified (0) (SQLDriverConnect)')
-    # - pytest -v tests
+    # Upstream tests need a live database-backed ODBC driver, so they cannot run here.
 
 about:
   home: https://github.com/mkleehammer/pyodbc
